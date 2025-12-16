@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkCustomer(); loadProfile()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub</h2>
+    <a href="customer-dashboard.html">Dashboard</a>
+    <a href="cart.html">Cart</a>
+    <a href="customer-orders.html">Orders</a>
+    <a href="profile.html" class="active">Profile</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Your Profile</h1>
+    <input id="p_email" placeholder="Email">
+    <input id="p_password" placeholder="Password">
+    <input id="p_mobile" placeholder="Mobile">
+    <input id="p_address" placeholder="Address">
+    <button onclick="updateProfile()">Update</button>
+    <button onclick="deactivateAccount()">Deactivate Account</button>
+  </main>
+</div>
+
+<script>
+function checkCustomer(){ const s = JSON.parse(localStorage.getItem("session")||"{}"); if(!s.role || s.role!=="customer") location.href="login.html"; }
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+
+function loadProfile(){
+  const u = JSON.parse(localStorage.getItem("session")).user;
+  const c = JSON.parse(localStorage.getItem("customers")||"[]").find(x=>x.username===u);
+  if(!c) return;
+  document.getElementById("p_email").value=c.email;
+  document.getElementById("p_password").value=c.password;
+  document.getElementById("p_mobile").value=c.mobile;
+  document.getElementById("p_address").value=c.address;
+}
+
+function updateProfile(){
+  const u = JSON.parse(localStorage.getItem("session")).user;
+  const customers = JSON.parse(localStorage.getItem("customers")||"[]");
+  const c = customers.find(x=>x.username===u);
+  if(!c) return;
+  c.email=document.getElementById("p_email").value;
+  c.password=document.getElementById("p_password").value;
+  c.mobile=document.getElementById("p_mobile").value;
+  c.address=document.getElementById("p_address").value;
+  localStorage.setItem("customers",JSON.stringify(customers));
+  alert("Profile updated!");
+}
+
+function deactivateAccount(){
+  if(confirm("Deactivate account?")){
+    const u = JSON.parse(localStorage.getItem("session")).user;
+    const customers = JSON.parse(localStorage.getItem("customers")||"[]");
+    const c = customers.find(x=>x.username===u);
+    if(c){ c.status="inactive"; localStorage.setItem("customers",JSON.stringify(customers)); logout(); }
+  }
+}
+</script>
+</body>
+</html>
