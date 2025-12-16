@@ -1,41 +1,27 @@
-/* =========================================================
-   ELECTROHUB JAVASCRIPT – ADMIN & CUSTOMER
-========================================================= */
+/* ================= INIT ================= */
+if(!localStorage.getItem("customers")) localStorage.setItem("customers","[]");
+if(!localStorage.getItem("products")) localStorage.setItem("products","[]");
+if(!localStorage.getItem("cart")) localStorage.setItem("cart","[]");
 
-/* ===================== GLOBAL INIT ===================== */
-if (!localStorage.getItem("cart")) localStorage.setItem("cart", JSON.stringify([]));
-if (!localStorage.getItem("customers")) localStorage.setItem("customers", JSON.stringify([]));
-if (!localStorage.getItem("audit_logs")) localStorage.setItem("audit_logs", JSON.stringify([]));
-if (!localStorage.getItem("products")) localStorage.setItem("products", JSON.stringify([]));
-if (!localStorage.getItem("orders")) localStorage.setItem("orders", JSON.stringify([]));
+/* ================= IMAGES ================= */
+const IMAGES = [
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/h/l/a/-original-imahg2ny5htzbrjb.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/4/b/p/-original-imahgzhpc8abrthu.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/j/a/b/-original-imah83eztbdcsknu.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/j/e/d/c61-rmx3933-realme-original-imah28xeqdygzshc.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/j/t/v/-original-imahavdv28z4nrkn.jpeg?q=70",
 
-/* ===================== PRODUCT IMAGES ===================== */
-const productImages = {
-  "Smart Phone": [
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/h/l/a/-original-imahg2ny5htzbrjb.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/4/b/p/-original-imahgzhpc8abrthu.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/j/a/b/-original-imah83eztbdcsknu.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/j/e/d/c61-rmx3933-realme-original-imah28xeqdygzshc.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/j/t/v/-original-imahavdv28z4nrkn.jpeg?q=70"
-  ],
-  "Laptop": [
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/k/t/y/-original-imahg53xspmfrsdd.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/a/g/p/-original-imahgwkqughzkwt3.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/c/g/4/-original-imahgfdyf6grkw9r.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/d/6/p/-original-imah3yhqcgjtxfhw.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/2/q/t/-original-imahg5ftjkmg4m82.jpeg?q=70"
-  ],
-  "PC": [
-    "https://rukminim2.flixcart.com/image/612/612/xif0q/desktop-computer/z/h/c/0-ent-intelcore-i5-2400-128ssd-1tbhdd-16gb-22inch-entwino-original-imahavnnvhnkrfay.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/612/612/xif0q/desktop-computer/l/x/0/0-aura-1-entwino-original-imahbdczmfqxzhek.jpeg?q=70"
-  ],
-  "Smart Watch": [
-    "https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/r/g/k/-original-imahf98j6ea4gkrf.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/h/u/i/-original-imah82pnswgua2vh.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/7/9/6/49-h9-t800-orange-001-android-ios-techio-yes-original-imahfjjr8jfrjnds.jpeg?q=70",
-    "https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/e/o/m/-original-imahghmjmftemu54.jpeg?q=70"
-  ]
-};
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/k/t/y/-original-imahg53xspmfrsdd.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/a/g/p/-original-imahgwkqughzkwt3.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/c/g/4/-original-imahgfdyf6grkw9r.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/d/6/p/-original-imah3yhqcgjtxfhw.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/2/q/t/-original-imahg5ftjkmg4m82.jpeg?q=70",
+
+  "https://rukminim2.flixcart.com/image/612/612/xif0q/desktop-computer/z/h/c/0-ent-intelcore-i5-2400-128ssd-1tbhdd-16gb-22inch-entwino-original-imahavnnvhnkrfay.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/612/612/xif0q/desktop-computer/l/x/0/0-aura-1-entwino-original-imahbdczmfqxzhek.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/r/g/k/-original-imahf98j6ea4gkrf.jpeg?q=70",
+  "https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/h/u/i/-original-imah82pnswgua2vh.jpeg?q=70"
+];
 
 /* ===================== HELPERS ===================== */
 function randomId(len) {
@@ -320,24 +306,23 @@ function makePayment() {
 }
 
 /* ===================== SEED SAMPLE PRODUCTS ===================== */
-function seedProducts() {
-  let products = JSON.parse(localStorage.getItem("products") || "[]");
-  if (products.length) return;
-  const categories = ["Smart Phone","Laptop","PC","Smart Watch"];
-  categories.forEach(cat => {
-    const count = cat === "PC" ? 5 : 10;
-    for(let i=1;i<=count;i++){
-      products.push({
-        product_id: randomId(5),
-        name:`${cat} ${i}`,
-        price: 10000 + i*500,
-        stock: 50,
-        category: cat,
-        image: randomFromArray(productImages[cat]),
-        status: "active",
-        created_on: new Date().toISOString()
-      });
-    }
-  });
-  localStorage.setItem("products", JSON.stringify(products));
+function seedProducts(){
+  if(JSON.parse(localStorage.getItem("products")).length) return;
+
+  const cats=["Smart Phone","Laptop","PC","Smart Watch"];
+  let products=[];
+
+  for(let i=1;i<=20;i++){
+    products.push({
+      product_id:i,
+      name:`Electro Product ${i}`,
+      price:1000+i*100,
+      stock:Math.floor(Math.random()*100),
+      category:cats[i % cats.length],
+      image: IMAGES[i % IMAGES.length], // 🔥 IMAGE MAGIC HERE
+      status:"active"
+    });
+  }
+
+  localStorage.setItem("products",JSON.stringify(products));
 }
