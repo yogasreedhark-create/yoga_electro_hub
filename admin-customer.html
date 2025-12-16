@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin | Customers</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkAdmin(); loadCustomers()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub Admin</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-products.html">Products</a>
+    <a href="admin-customers.html" class="active">Customers</a>
+    <a href="admin-orders.html">Orders</a>
+    <a href="admin-audit.html">Audit Logs</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Customer Management</h1>
+    <table class="table">
+      <thead>
+        <tr><th>ID</th><th>Username</th><th>Email</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody id="customerTable"></tbody>
+    </table>
+  </main>
+</div>
+
+<script>
+function checkAdmin(){ const s = JSON.parse(localStorage.getItem("session")||"{}"); if(!s.role || s.role!=="admin") location.href="login.html"; }
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+
+if(!localStorage.getItem("customers")) localStorage.setItem("customers","[]");
+
+function loadCustomers(){
+  const tbody = document.getElementById("customerTable");
+  const customers = JSON.parse(localStorage.getItem("customers")||"[]");
+  tbody.innerHTML="";
+  customers.forEach(c=>{
+    tbody.innerHTML+=`<tr>
+      <td>${c.customerId}</td><td>${c.username}</td><td>${c.email}</td><td>${c.status}</td>
+      <td><button onclick="activateCustomer(${c.customerId})">Activate</button></td>
+    </tr>`;
+  });
+}
+
+function activateCustomer(id){
+  const customers = JSON.parse(localStorage.getItem("customers")||"[]");
+  const c = customers.find(x=>x.customerId===id);
+  if(c){ c.status="active"; localStorage.setItem("customers",JSON.stringify(customers)); loadCustomers(); }
+}
+</script>
+</body>
+</html>
