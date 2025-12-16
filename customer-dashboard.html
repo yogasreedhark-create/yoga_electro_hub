@@ -4,15 +4,8 @@
 <meta charset="UTF-8">
 <title>Customer Dashboard</title>
 <link rel="stylesheet" href="style.css">
-<style>
-  /* minimal product grid and card styling in case style.css is missing */
-  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 15px; }
-  .product-card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; text-align: center; }
-  .product-card img { width: 100%; border-radius: 8px; }
-  .product-card button { margin-top: 10px; padding: 8px; width: 100%; border: none; border-radius: 6px; cursor: pointer; background: #00e5ff; color: #000; font-weight: bold; }
-</style>
 </head>
-<body onload="checkCustomer(); seedProducts(); loadCatalogue();">
+<body onload="checkCustomer();loadCatalogue()">
 
 <div class="dashboard">
   <aside class="sidebar">
@@ -41,75 +34,37 @@
 </div>
 
 <script>
-// ===== CUSTOMER AUTH CHECK =====
-function checkCustomer() {
+function checkCustomer(){
   const s = JSON.parse(localStorage.getItem("session") || "{}");
-  if (!s.role || s.role !== "customer") location.href = "login.html";
+  if(!s.role || s.role !== "customer") location.href = "login.html";
 }
 
-// ===== LOGOUT =====
-function logout() {
-  if (confirm("Are you sure you want to logout?")) {
-    localStorage.removeItem("session");
-    location.href = "login.html";
-  }
-}
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
 
-// ===== DYNAMIC PRICE =====
-function dynamicPrice(p) {
-  let price = +p.price;
-  if (p.stock < 10) price *= 1.05;
-  if (p.stock > 100) price *= 0.95;
-  return Math.round(price * 100) / 100;
-}
+function dynamicPrice(p){ let price = +p.price; if(p.stock<10) price*=1.05; if(p.stock>100) price*=0.95; return Math.round(price*100)/100; }
 
-// ===== SEED PRODUCTS =====
-function seedProducts() {
-  if (!localStorage.getItem("products")) {
-    const cats = ["Smart Phone","Laptop","PC","Smart Watch","Tablets"];
-    let products = [];
-    for (let i = 1; i <= 20; i++) {
-      products.push({
-        product_id: i,
-        name: `Electro Product ${i}`,
-        price: 1000 + i * 100,
-        stock: Math.floor(Math.random() * 150),
-        category: cats[i % 5],
-        image: `https://via.placeholder.com/200?text=Product+${i}`,
-        status: "active"
-      });
-    }
-    localStorage.setItem("products", JSON.stringify(products));
-  }
-}
-
-// ===== LOAD CATALOGUE =====
-function loadCatalogue() {
+function loadCatalogue(){
   const q = document.getElementById("searchBox").value.toLowerCase();
   const cat = document.getElementById("catFilter").value;
-  const products = JSON.parse(localStorage.getItem("products") || "[]");
+  const products = JSON.parse(localStorage.getItem("products")||"[]");
   const catalogue = document.getElementById("catalogue");
   catalogue.innerHTML = "";
 
-  products.filter(p => 
-    p.status === "active" &&
-    p.name.toLowerCase().includes(q) &&
-    (!cat || p.category === cat)
-  ).forEach(p => {
-    catalogue.innerHTML += `
+  products.filter(p=>p.status==="active" && p.name.toLowerCase().includes(q) && (!cat || p.category===cat))
+    .forEach(p=>{
+      catalogue.innerHTML += `
       <div class="card product-card">
         <img src="${p.image}" alt="${p.name}">
         <h4>${p.name}</h4>
         <p>₹${dynamicPrice(p)}</p>
         <button onclick="addToCart(${p.product_id})">Add to Cart</button>
       </div>`;
-  });
+    });
 }
 
-// ===== ADD TO CART =====
-function addToCart(id) {
+function addToCart(id){
   let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  if (!cart.includes(id)) cart.push(id);
+  cart.push(id);
   localStorage.setItem("cart", JSON.stringify(cart));
   alert("Product added to cart!");
 }
