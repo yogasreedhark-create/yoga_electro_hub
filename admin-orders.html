@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin | Orders</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkAdmin(); loadOrders()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub Admin</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-products.html">Products</a>
+    <a href="admin-customers.html">Customers</a>
+    <a href="admin-orders.html" class="active">Orders</a>
+    <a href="admin-audit.html">Audit Logs</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Order Management</h1>
+    <table class="table">
+      <thead>
+        <tr><th>ID</th><th>User</th><th>Total</th><th>Status</th><th>Date</th></tr>
+      </thead>
+      <tbody id="orderTable"></tbody>
+    </table>
+  </main>
+</div>
+
+<script>
+function checkAdmin(){ const s = JSON.parse(localStorage.getItem("session")||"{}"); if(!s.role || s.role!=="admin") location.href="login.html"; }
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+
+function loadOrders(){
+  const orders = JSON.parse(localStorage.getItem("orders")||"[]");
+  const tbody = document.getElementById("orderTable");
+  tbody.innerHTML="";
+  orders.forEach(o=>{
+    tbody.innerHTML+=`<tr>
+      <td>${o.orderId}</td><td>${o.user}</td><td>₹${o.final}</td><td>${o.status}</td><td>${o.date}</td>
+    </tr>`;
+  });
+}
+</script>
+</body>
+</html>
