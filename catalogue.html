@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ElectroHub | Products</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body onload="customerAuth();seedProducts();loadCatalogue()">
+
+<div class="layout">
+  <aside class="sidebar">
+    <h2>⚡ ElectroHub</h2>
+    <a href="customer-dashboard.html">Home</a>
+    <a class="active">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="orders.html">Orders</a>
+    <a href="profile.html">Profile</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="content">
+    <h1>Product Catalogue</h1>
+
+    <input id="searchBox" placeholder="Search products..." onkeyup="loadCatalogue()">
+
+    <select id="catFilter" onchange="loadCatalogue()">
+      <option value="">All Categories</option>
+      <option>Smart Phone</option>
+      <option>Laptop</option>
+      <option>PC</option>
+      <option>Smart Watch</option>
+      <option>Tablets</option>
+    </select>
+
+    <div class="grid" id="catalogue"></div>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
