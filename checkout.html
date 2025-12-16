@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Checkout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body onload="customerAuth();loadCheckout()">
+
+<div class="auth-card">
+  <h2>Payment</h2>
+
+  <select id="payMode">
+    <option>UPI</option>
+    <option>Debit</option>
+    <option>Credit</option>
+  </select>
+
+  <button onclick="makePayment()">Pay Now</button>
+  <p id="msg" class="msg"></p>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
