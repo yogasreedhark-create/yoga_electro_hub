@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Orders</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkCustomer(); loadCustomerOrders()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub</h2>
+    <a href="customer-dashboard.html">Dashboard</a>
+    <a href="cart.html">Cart</a>
+    <a href="customer-orders.html" class="active">Orders</a>
+    <a href="profile.html">Profile</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Your Orders</h1>
+    <div id="orderList"></div>
+  </main>
+</div>
+
+<script>
+function checkCustomer(){ const s = JSON.parse(localStorage.getItem("session")||"{}"); if(!s.role || s.role!=="customer") location.href="login.html"; }
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+
+function loadCustomerOrders(){
+  const u = JSON.parse(localStorage.getItem("session")).user;
+  const orders = JSON.parse(localStorage.getItem("orders")||"[]");
+  const orderDiv = document.getElementById("orderList");
+  orderDiv.innerHTML="";
+  orders.filter(o=>o.user===u).reverse().forEach(o=>{
+    orderDiv.innerHTML+=`<p>${o.orderId} - ₹${o.final} - ${o.status}</p>`;
+  });
+}
+</script>
+</body>
+</html>
