@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkAdmin()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub Admin</h2>
+    <a href="admin-dashboard.html" class="active">Dashboard</a>
+    <a href="admin-products.html">Products</a>
+    <a href="admin-customers.html">Customers</a>
+    <a href="admin-orders.html">Orders</a>
+    <a href="admin-audit.html">Audit Logs</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Welcome Admin</h1>
+    <p>Use the sidebar to manage products, customers, and orders.</p>
+  </main>
+</div>
+
+<script>
+function checkAdmin(){
+  const s = JSON.parse(localStorage.getItem("session") || "{}");
+  if(!s.role || s.role !== "admin") location.href = "login.html";
+}
+
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+</script>
+</body>
+</html>
