@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Products</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkAdmin();loadProducts()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub Admin</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-products.html" class="active">Products</a>
+    <a href="admin-customers.html">Customers</a>
+    <a href="admin-orders.html">Orders</a>
+    <a href="admin-audit.html">Audit Logs</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Product Management</h1>
+
+    <div class="card">
+      <h3>Add Product</h3>
+      <input id="pname" placeholder="Product Name">
+      <input id="pprice" type="number" placeholder="Price">
+      <input id="pstock" type="number" placeholder="Stock">
+      <select id="pcategory">
+        <option>Smart Phone</option>
+        <option>Laptop</option>
+        <option>PC</option>
+        <option>Smart Watch</option>
+        <option>Tablets</option>
+      </select>
+      <input id="pimage" placeholder="Image URL">
+      <button onclick="addProduct()">Add Product</button>
+    </div>
+
+    <h3>Products</h3>
+    <select onchange="filterProducts(this.value)">
+      <option value="all">All</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+
+    <table class="table">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Price</th><th>Stock</th><th>Category</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody id="productTable"></tbody>
+    </table>
+  </main>
+</div>
+
+<script>
+function checkAdmin(){ const s = JSON.parse(localStorage.getItem("session")||"{}"); if(!s.role || s.role!=="admin") location.href="login.html"; }
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+
+if(!localStorage.getItem("products")) localStorage.setItem("products","[]");
+
+function addProduct(){
+  const products = JSON.parse(localStorage.getItem("products"));
+  const product = {
+    product_id: Math.floor(Math.random()*100000),
+    name: document.getElementById("pname").value,
+    price: +document.getElementById("pprice").value,
+    stock: +document.getElementById("pstock").value,
+    category: document.getElementById("pcategory").value,
+    image: document.getElementById("pimage").value,
+    status: "active"
+  };
+  products.push(product);
+  localStorage.setItem("products",JSON.stringify(products));
+  loadProducts();
+}
+
+function loadProducts(filter="all"){
+  const products = JSON.parse(localStorage.getItem("products")||"[]");
+  const tbody = document.getElementById("productTable");
+  tbody.innerHTML = "";
+  products.filter(p=>filter==="all"||p.status===filter)
+    .forEach(p=>{
+      tbody.innerHTML+=`<tr>
+      <td>${p.product_id}</td><td>${p.name}</td><td>₹${p.price}</td><td>${p.stock}</td><td>${p.category}</td><td>${p.status}</td>
+      <td><button onclick="toggleProduct(${p.product_id})">Toggle</button></td>
+      </tr>`;
+    });
+}
+
+function toggleProduct(id){
+  const products = JSON.parse(localStorage.getItem("products"));
+  const p = products.find(x=>x.product_id===id);
+  p.status = p.status==="active"?"inactive":"active";
+  localStorage.setItem("products",JSON.stringify(products));
+  loadProducts();
+}
+
+function filterProducts(v){ loadProducts(v); }
+</script>
+</body>
+</html>
