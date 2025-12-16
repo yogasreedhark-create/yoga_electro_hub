@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin | Audit Logs</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkAdmin(); loadAudit()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub Admin</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-products.html">Products</a>
+    <a href="admin-customers.html">Customers</a>
+    <a href="admin-orders.html">Orders</a>
+    <a href="admin-audit.html" class="active">Audit Logs</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Audit Logs</h1>
+    <button onclick="exportCSV()">Export CSV</button>
+    <table class="table">
+      <thead>
+        <tr><th>Module</th><th>Operation</th><th>User</th><th>Date</th></tr>
+      </thead>
+      <tbody id="auditTable"></tbody>
+    </table>
+  </main>
+</div>
+
+<script>
+function checkAdmin(){ const s = JSON.parse(localStorage.getItem("session")||"{}"); if(!s.role || s.role!=="admin") location.href="login.html"; }
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+
+if(!localStorage.getItem("audit_logs")) localStorage.setItem("audit_logs","[]");
+
+function loadAudit(){
+  const logs = JSON.parse(localStorage.getItem("audit_logs")||"[]");
+  const tbody = document.getElementById("auditTable");
+  tbody.innerHTML="";
+  logs.forEach(l=>{
+    tbody.innerHTML+=`<tr>
+      <td>${l.module}</td><td>${l.operation}</td><td>${l.created_by}</td><td>${l.created_on}</td>
+    </tr>`;
+  });
+}
+
+function exportCSV(){
+  const logs = JSON.parse(localStorage.getItem("audit_logs")||"[]");
+  let csv = "Module,Operation,User,Date\n";
+  logs.forEach(l=>{ csv+=`${l.module},${l.operation},${l.created_by},${l.created_on}\n`; });
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv]));
+  a.download="audit_logs.csv";
+  a.click();
+}
+</script>
+</body>
+</html>
