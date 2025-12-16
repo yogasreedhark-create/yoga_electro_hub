@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cart</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkCustomer(); loadCart()">
+
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2 class="neon-title">⚡ ElectroHub</h2>
+    <a href="customer-dashboard.html">Dashboard</a>
+    <a href="cart.html" class="active">Cart</a>
+    <a href="customer-orders.html">Orders</a>
+    <a href="profile.html">Profile</a>
+    <button onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main">
+    <h1>Your Cart</h1>
+    <div id="cartItems"></div>
+    <h3 id="cartTotal"></h3>
+    <button onclick="goCheckout()">Checkout</button>
+  </main>
+</div>
+
+<script>
+function checkCustomer(){ const s = JSON.parse(localStorage.getItem("session")||"{}"); if(!s.role || s.role!=="customer") location.href="login.html"; }
+function logout(){ localStorage.removeItem("session"); location.href="login.html"; }
+
+function dynamicPrice(p){ let price=+p.price; if(p.stock<10) price*=1.05; if(p.stock>100) price*=0.95; return Math.round(price*100)/100; }
+
+function loadCart(){
+  const cart = JSON.parse(localStorage.getItem("cart")||"[]");
+  const products = JSON.parse(localStorage.getItem("products")||"[]");
+  const cartDiv = document.getElementById("cartItems");
+  cartDiv.innerHTML="";
+  let total=0;
+  if(cart.length===0){ cartDiv.innerHTML="<p>Cart is empty</p>"; document.getElementById("cartTotal").innerText=""; return; }
+  cart.forEach(id=>{
+    const p = products.find(pr=>pr.product_id===id);
+    if(!p) return;
+    const price = dynamicPrice(p);
+    total+=price;
+    cartDiv.innerHTML+=`<div class="card"><strong>${p.name}</strong> - ₹${price}</div>`;
+  });
+  const gst = total*0.02;
+  const final = total+gst;
+  document.getElementById("cartTotal").innerText=`Total: ₹${total.toFixed(2)} | GST: ₹${gst.toFixed(2)} | Final: ₹${final.toFixed(2)}`;
+}
+
+function goCheckout(){ location.href="checkout.html"; }
+</script>
+</body>
+</html>
