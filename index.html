@@ -4,20 +4,11 @@
 <meta charset="UTF-8">
 <title>ElectroHub Login</title>
 <link rel="stylesheet" href="style.css">
-<style>
-  /* Minimal auth-card styling in case style.css is missing */
-  body { background: #0a0a0f; color: #fff; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-  .auth-container { display: flex; justify-content: center; align-items: center; width: 100%; }
-  .auth-card { background: rgba(255,255,255,0.08); padding: 30px; border-radius: 18px; backdrop-filter: blur(10px); text-align: center; width: 360px; }
-  .auth-card input, .auth-card select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; outline: none; background: rgba(255,255,255,0.15); color: #fff; }
-  .auth-card button { width: 100%; padding: 12px; border: none; border-radius: 12px; background: linear-gradient(135deg,#ff2cdf,#00e5ff); color: black; font-weight: 600; cursor: pointer; margin-top: 10px; }
-  .auth-card button:hover { transform: scale(1.05); }
-  .neon-title { font-size: 2rem; margin-bottom: 20px; color: white; text-shadow: 0 0 10px #ff2cdf, 0 0 20px #00e5ff; }
-</style>
 </head>
 <body>
 
 <div class="auth-container">
+
   <div class="auth-card">
     <h2 class="neon-title">ElectroHub Login</h2>
 
@@ -30,25 +21,22 @@
     <input id="password" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
 
-    <p>Don't have an account? <a href="register.html" style="color:#00e5ff;">Register</a></p>
-    <p id="msg" style="color:#ff2cdf; text-align:center;"></p>
+    <p>Don't have an account? <a href="register.html">Register</a></p>
+    <p id="msg" style="color: #ff2cdf; text-align:center;"></p>
   </div>
+
 </div>
 
 <script>
-// ===== LOGIN FUNCTION =====
 function login(){
   const role = document.getElementById('roleSelect').value;
   const u = document.getElementById('username').value.trim();
   const p = document.getElementById('password').value;
   const msg = document.getElementById('msg');
 
-  if(!u || !p) { msg.innerText = "Please enter username and password"; return; }
-
   if(role === "admin"){
     if(u === "admin" && p === "admin123"){
       localStorage.setItem("session", JSON.stringify({role:"admin", user:"admin"}));
-      alert("Login successful as Admin!");
       location.href = "admin-dashboard.html";
       return;
     } else {
@@ -60,30 +48,11 @@ function login(){
   // CUSTOMER LOGIN
   let customers = JSON.parse(localStorage.getItem("customers") || "[]");
   let user = customers.find(c=>c.username===u && c.password===p && c.status==="active");
-  if(!user){ msg.innerText = "Invalid customer credentials or inactive user"; return; }
+  if(!user){ msg.innerText = "Invalid customer credentials"; return; }
 
   localStorage.setItem("session", JSON.stringify({role:"customer", user:u}));
-  alert("Login successful as Customer!");
   location.href = "customer-dashboard.html";
 }
-
-// ===== LOGOUT FUNCTION =====
-// Use this in dashboards: <button onclick="logout()">Logout</button>
-function logout(){
-  if(confirm("Are you sure you want to logout?")){
-    localStorage.removeItem("session");
-    alert("Logged out successfully!");
-    window.location.href = "index.html"; // redirect to login
-  }
-}
-
-// ===== AUTO REDIRECT IF ALREADY LOGGED IN =====
-window.onload = function() {
-  const s = JSON.parse(localStorage.getItem("session") || "{}");
-  if(s.role === "admin") window.location.href = "admin-dashboard.html";
-  if(s.role === "customer") window.location.href = "customer-dashboard.html";
-};
 </script>
-
 </body>
 </html>
